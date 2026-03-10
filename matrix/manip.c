@@ -1,5 +1,5 @@
 #include "matrix.h"
-#include "private.h"
+#include "matrix_internal.h"
 #include "manip.h"
 #include <stdlib.h>
 #include <math.h>
