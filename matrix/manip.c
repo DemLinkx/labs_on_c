@@ -24,7 +24,6 @@ int m_tr(matrix* m)
         return 0;
     }
     
-    // Для неквадратных — перевыделяем память
     double* new_data = (double*)malloc(h * w * sizeof(double));
     if (!new_data) return -1;
     
@@ -36,8 +35,6 @@ int m_tr(matrix* m)
     }
     
     free(m_get_data(m));
-    // Нужно установить новые данные через специальную функцию
-    // Добавим это в matrix.h как m_set_data или используем m_realloc_data
     m_realloc_data(m, h, w);
     double* m_data = m_get_data(m);
     memcpy(m_data, new_data, h * w * sizeof(double));

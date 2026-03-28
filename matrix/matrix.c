@@ -11,8 +11,7 @@ struct matrix {
 };
 typedef struct matrix matrix;
 
-// Creates a new matrix with width w and height h
-// Returns a pointer to matrix or NULL on error allocation failure
+
 matrix* m_new(size_t w, size_t h)
 {
     if (w == 0 || h == 0) return NULL;
@@ -32,8 +31,7 @@ matrix* m_new(size_t w, size_t h)
     return m;
 }
 
-// Duplicates a matrix - creates a deep copy
-// Returns a pointer to new matrix or NULL on allocation failure
+
 matrix* m_dup(const matrix* m)
 {
     if (!m) {
@@ -50,7 +48,6 @@ matrix* m_dup(const matrix* m)
     return new_m;
 }
 
-// Frees matrix memory - deallocates both data and matrix structure
 void m_del(matrix* m)
 {
     if (m) {
@@ -59,8 +56,7 @@ void m_del(matrix* m)
     }
 }
 
-// Gets a mutable pointer to matrix element at position (i, j)
-// Returns pointer or NULL if indices are out of bounds
+
 double* m_at(matrix* m, size_t i, size_t j)
 {
     if (!m || i >= m->h || j >= m->w) {
@@ -70,8 +66,7 @@ double* m_at(matrix* m, size_t i, size_t j)
     return &m->data[m->w * i + j];
 }
 
-// Gets a const pointer to matrix element at position (i, j)
-// Returns const pointer or NULL if indices are out of bounds
+
 const double* m_cat(const matrix* m, size_t i, size_t j)
 {
     if (!m || i >= m->h || j >= m->w) {
@@ -81,8 +76,7 @@ const double* m_cat(const matrix* m, size_t i, size_t j)
     return &m->data[m->w * i + j];
 }
 
-// Sets the value at matrix position (i, j)
-// Returns 0 on success, -1 if indices are out of bounds
+
 int m_set(matrix* m, size_t i, size_t j, double value)
 {
     if (!m || i >= m->h || j >= m->w) {
@@ -93,8 +87,7 @@ int m_set(matrix* m, size_t i, size_t j, double value)
     return 0;
 }
 
-// Gets the value at matrix position (i, j)
-// Returns 0 on success, -1 if indices are out of bounds or value is NULL
+
 int m_get(const matrix* m, size_t i, size_t j, double* value)
 {
     if (!m || !value || i >= m->h || j >= m->w) {
@@ -105,19 +98,16 @@ int m_get(const matrix* m, size_t i, size_t j, double* value)
     return 0;
 }
 
-// Returns the width of the matrix
 size_t m_width(const matrix* m)
 {
     return m ? m->w : 0;
 }
 
-// Returns the height of the matrix
 size_t m_height(const matrix* m)
 {
     return m ? m->h : 0;
 }
 
-// Fills the matrix with zeros
 void m_zero(matrix* m)
 {
     if (!m) {
@@ -127,8 +117,7 @@ void m_zero(matrix* m)
     memset(m->data, 0, m->w * m->h * sizeof(double));
 }
 
-// Converts matrix to identity matrix (1s on diagonal, 0s elsewhere)
-// Only works for square matrices - returns NULL if not square
+
 matrix* m_eye(matrix* m)
 {
     if (!m || m->w != m->h) {
@@ -144,8 +133,7 @@ matrix* m_eye(matrix* m)
     return m;
 }
 
-// Creates a new zero matrix with width w and height h
-// Returns pointer to matrix or NULL on allocation failure
+
 matrix* m_znew(size_t w, size_t h)
 {
     matrix* m = m_new(w, h);
@@ -155,8 +143,7 @@ matrix* m_znew(size_t w, size_t h)
     return m;
 }
 
-// Creates a new identity matrix of size w x w
-// Returns pointer to identity matrix or NULL on allocation failure
+
 matrix* m_enew(size_t w)
 {
     matrix* m = m_new(w, w);
@@ -166,9 +153,7 @@ matrix* m_enew(size_t w)
     return m;
 }
 
-// Copies data from matrix m2 to matrix m1
-// Matrices must have the same dimensions
-// Returns m1 on success, NULL on error
+
 matrix* m_copy_data(matrix* m1, const matrix* m2)
 {
     if (!m1 || !m2 || m1->w != m2->w || m1->h != m2->h) {
@@ -180,7 +165,6 @@ matrix* m_copy_data(matrix* m1, const matrix* m2)
     return m1;
 }
 
-// Prints the matrix to stdout in a formatted way
 void m_print(const matrix* m)
 {
     if (!m) {
@@ -197,9 +181,8 @@ void m_print(const matrix* m)
     }
 }
 
-// Reads matrix elements from stdin
-// Creates w x h matrix and fills with values from input
-// Returns pointer to matrix or NULL on allocation failure or input error
+
+
 matrix* m_read(size_t w, size_t h)
 {
     matrix* m = m_new(w, h);
