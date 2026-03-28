@@ -10,16 +10,6 @@
  */
 
 
-struct node {
-    double data;
-    struct node *next, *prev;
-};
-
-struct deque {
-    struct node *front, *back;
-};
-
-typedef struct node nd;
 typedef struct deque deque;
 
 /** Инициализация пустого дека */
