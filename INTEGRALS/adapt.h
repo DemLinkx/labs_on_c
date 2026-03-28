@@ -1,6 +1,7 @@
 #ifndef adaptato
 #define adaptato
 #include "quad.h"
+#include "types.h"
 
 typedef double (*fnc_t)(double x, const void *par);
 

@@ -2,6 +2,7 @@
 #define quadadada
 
 #include <stddef.h>
+#include "types.h" 
 
 typedef double (*fnc_t)(double x, const void *par);
 

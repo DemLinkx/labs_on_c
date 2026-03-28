@@ -1,17 +1,19 @@
 #ifndef funcsglobaloffensive
 #define funcsglobaloffensive
 
+#include "types.h"
 #include <stddef.h>
-
-struct expn_pars
-{
-    double a, b, c, d;
-};
 
 
 // обязательная
 double expn(double x, const void *par);
 
+
+expn_pars_t* expn_pars_create(double a, double b, double c, double d);
+void expn_pars_free(expn_pars_t *p);
+
+pol_pars_t* pol_pars_create(size_t degree, const double *coeff);
+void pol_pars_free(pol_pars_t *p);
 
 /*
  * degree — степень полинома
@@ -21,12 +23,6 @@ double expn(double x, const void *par);
  * ...
  *coeff[degree] — коэффициент при x^degree
  */
-
-struct pol_pars
-{
-    size_t degree;
-    const double *coeff;
-};
 
 
 //обязательная
