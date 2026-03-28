@@ -131,4 +131,13 @@ matrix* m_copy_data(matrix* m1, const matrix* m2);
 
 matrix* m_read(size_t w, size_t h);
 
+// Получение указателя на данные (для внутренних операций библиотеки)
+double* m_get_data(matrix* m);
+const double* m_get_data_const(const matrix* m);
+
+// Установка размеров (для операций типа транспонирования)
+int m_set_dimensions(matrix* m, size_t w, size_t h);
+
+// Выделение/перевыделение данных
+int m_realloc_data(matrix* m, size_t w, size_t h);
 #endif 

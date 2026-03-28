@@ -1,8 +1,15 @@
 #include "matrix.h"
-#include "matrix_internal.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+struct matrix {
+    double* data;
+    size_t w;
+    size_t h;
+};
+typedef struct matrix matrix;
 
 // Creates a new matrix with width w and height h
 // Returns a pointer to matrix or NULL on error allocation failure
@@ -211,4 +218,35 @@ matrix* m_read(size_t w, size_t h)
     }
 
     return m;
+}
+
+
+double* m_get_data(matrix* m)
+{
+    return m ? m->data : NULL;
+}
+
+const double* m_get_data_const(const matrix* m)
+{
+    return m ? m->data : NULL;
+}
+
+int m_set_dimensions(matrix* m, size_t w, size_t h)
+{
+    if (!m) return -1;
+    m->w = w;
+    m->h = h;
+    return 0;
+}
+
+int m_realloc_data(matrix* m, size_t w, size_t h)
+{
+    if (!m) return -1;
+    double* new_data = (double*)malloc(w * h * sizeof(double));
+    if (!new_data) return -1;
+    free(m->data);
+    m->data = new_data;
+    m->w = w;
+    m->h = h;
+    return 0;
 }

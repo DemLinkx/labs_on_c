@@ -1,153 +1,128 @@
 #include "matrix.h"
-#include "matrix_internal.h"
 #include "manip.h"
 #include <stdlib.h>
 #include <math.h>
+#include <string.h> 
 
-// Transposes matrix in-place: swaps rows and columns
-// Works for both square and rectangular matrices
-// Returns 0 on success, -1 on error
+
 int m_tr(matrix* m)
 {
-    if (!m) {
-        return -1;
-    }
-
-    if (m->w == m->h) {
-        for (size_t i = 0; i < m->h; i++) {
-            for (size_t j = i + 1; j < m->w; j++) {
-                double tmp = m->data[m->w * i + j];
-                m->data[m->w * i + j] = m->data[m->w * j + i];
-                m->data[m->w * j + i] = tmp;
+    if (!m) return -1;
+    
+    size_t w = m_width(m);
+    size_t h = m_height(m);
+    
+    if (w == h) {
+        double* data = m_get_data(m);
+        for (size_t i = 0; i < h; i++) {
+            for (size_t j = i + 1; j < w; j++) {
+                double tmp = data[w * i + j];
+                data[w * i + j] = data[w * j + i];
+                data[w * j + i] = tmp;
             }
         }
         return 0;
     }
-
-    double* new_data = (double*)malloc(m->h * m->w * sizeof(double));
-    if (!new_data) {
-        return -1;
-    }
-
-    for (size_t i = 0; i < m->h; i++) {
-        for (size_t j = 0; j < m->w; j++) {
-            new_data[m->h * j + i] = m->data[m->w * i + j];
+    
+    // Для неквадратных — перевыделяем память
+    double* new_data = (double*)malloc(h * w * sizeof(double));
+    if (!new_data) return -1;
+    
+    const double* old_data = m_get_data_const(m);
+    for (size_t i = 0; i < h; i++) {
+        for (size_t j = 0; j < w; j++) {
+            new_data[h * j + i] = old_data[w * i + j];
         }
     }
-
-    free(m->data);
-    m->data = new_data;
-
-    size_t tmp = m->w;
-    m->w = m->h;
-    m->h = tmp;
-
+    
+    free(m_get_data(m));
+    // Нужно установить новые данные через специальную функцию
+    // Добавим это в matrix.h как m_set_data или используем m_realloc_data
+    m_realloc_data(m, h, w);
+    double* m_data = m_get_data(m);
+    memcpy(m_data, new_data, h * w * sizeof(double));
+    free(new_data);
     return 0;
 }
 
-// Swaps rows i and j in the matrix
-// Returns 0 on success, -1 if indices are out of bounds
 int m_srow(matrix* m, size_t i, size_t j)
 {
-    if (!m || i >= m->h || j >= m->h) {
-        return -1;
+    if (!m || i >= m_height(m) || j >= m_height(m)) return -1;
+    if (i == j) return 0;
+    
+    size_t w = m_width(m);
+    double* data = m_get_data(m);
+    for (size_t col = 0; col < w; col++) {
+        double tmp = data[w * i + col];
+        data[w * i + col] = data[w * j + col];
+        data[w * j + col] = tmp;
     }
-
-    if (i == j) {
-        return 0;
-    }
-
-    for (size_t col = 0; col < m->w; col++) {
-        double tmp = m->data[m->w * i + col];
-        m->data[m->w * i + col] = m->data[m->w * j + col];
-        m->data[m->w * j + col] = tmp;
-    }
-
     return 0;
 }
 
-// Swaps columns i and j in the matrix
-// Returns 0 on success, -1 if indices are out of bounds
 int m_scol(matrix* m, size_t i, size_t j)
 {
-    if (!m || i >= m->w || j >= m->w) {
-        return -1;
+    if (!m || i >= m_width(m) || j >= m_width(m)) return -1;
+    if (i == j) return 0;
+    
+    size_t w = m_width(m);
+    size_t h = m_height(m);
+    double* data = m_get_data(m);
+    for (size_t row = 0; row < h; row++) {
+        double tmp = data[w * row + i];
+        data[w * row + i] = data[w * row + j];
+        data[w * row + j] = tmp;
     }
-
-    if (i == j) {
-        return 0;
-    }
-
-    for (size_t row = 0; row < m->h; row++) {
-        double tmp = m->data[m->w * row + i];
-        m->data[m->w * row + i] = m->data[m->w * row + j];
-        m->data[m->w * row + j] = tmp;
-    }
-
     return 0;
 }
 
-// Multiplies row i by scalar d in-place: row[i] *= d
-// Returns 0 on success, -1 if index is out of bounds
 int m_rmul(matrix* m, size_t i, double d)
 {
-    if (!m || i >= m->h) {
-        return -1;
+    if (!m || i >= m_height(m)) return -1;
+    
+    size_t w = m_width(m);
+    double* data = m_get_data(m);
+    for (size_t j = 0; j < w; j++) {
+        data[w * i + j] *= d;
     }
-
-    for (size_t j = 0; j < m->w; j++) {
-        m->data[m->w * i + j] *= d;
-    }
-
     return 0;
 }
 
-// Divides row i by scalar d in-place: row[i] /= d
-// Returns 0 on success, -1 if index is out of bounds or d == 0.0
 int m_rdiv(matrix* m, size_t i, double d)
 {
-    if (!m || i >= m->h || d == 0.0) {
-        return -1;
-    }
-
+    if (!m || i >= m_height(m) || d == 0.0) return -1;
     return m_rmul(m, i, 1.0 / d);
 }
 
-// Adds row 'from' multiplied by coefficient to row 'to': row[to] += coeff * row[from]
-// Used in Gaussian elimination and matrix decomposition
-// Returns 0 on success, -1 if indices are out of bounds
 int m_radd(matrix* m, size_t to, size_t from, double coeff)
 {
-    if (!m || to >= m->h || from >= m->h) {
-        return -1;
+    if (!m || to >= m_height(m) || from >= m_height(m)) return -1;
+    
+    size_t w = m_width(m);
+    double* data = m_get_data(m);
+    for (size_t j = 0; j < w; j++) {
+        data[w * to + j] += coeff * data[w * from + j];
     }
-
-    for (size_t j = 0; j < m->w; j++) {
-        m->data[m->w * to + j] += coeff * m->data[m->w * from + j];
-    }
-
     return 0;
 }
 
-// Calculates the infinity norm (maximum absolute row sum) of the matrix
-// Returns the norm value, -1.0 if matrix is NULL
 double m_norm(const matrix* m)
 {
-    if (!m) {
-        return -1.0;
-    }
-
+    if (!m) return -1.0;
+    
     double max_row_sum = 0.0;
-
-    for (size_t i = 0; i < m->h; i++) {
+    size_t w = m_width(m);
+    size_t h = m_height(m);
+    const double* data = m_get_data_const(m);
+    
+    for (size_t i = 0; i < h; i++) {
         double row_sum = 0.0;
-        for (size_t j = 0; j < m->w; j++) {
-            row_sum += fabs(m->data[m->w * i + j]);
+        for (size_t j = 0; j < w; j++) {
+            row_sum += fabs(data[w * i + j]);
         }
         if (row_sum > max_row_sum) {
             max_row_sum = row_sum;
         }
     }
-
     return max_row_sum;
 }

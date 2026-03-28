@@ -74,7 +74,6 @@ int main(void) {
     
     printf("Результат интегрирования: %.10lf\n", res);
     
-    /* ✅ Освобождение через фабрику */
     if (fchoice == 1) expn_pars_free(par);
     else if (fchoice == 2) pol_pars_free(par);
     
