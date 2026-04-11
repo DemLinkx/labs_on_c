@@ -34,6 +34,8 @@ int deque_push_front (deque* d, double data){
     if (!new_nd) return 1;
 
     new_nd->prev = NULL;
+    new_nd->next = NULL;
+
     new_nd->data = data;
     new_nd->next = d->front;
 
@@ -50,6 +52,7 @@ int deque_push_back (deque* d, double data){
     if (!new_nd) return 1;
 
     new_nd->next = NULL;
+    new_nd->prev = NULL;
     new_nd->data = data;
 
     if (!deque_is_empty(d)){ 
