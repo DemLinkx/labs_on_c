@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/dmitrij/VsProjects/labs_on_c/laplus/acc/program'
+relocations:     []
+...
