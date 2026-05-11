@@ -9,7 +9,6 @@ typedef std::string str;
 
 class account {
 public:
-    // Конструктор с параметрами по умолчанию
     account(str name, 
             str dogovor = "Standart diablo Gringo Dogovor",
             double balance = 0.0,
@@ -19,7 +18,7 @@ public:
     double getBalance() const;
     double getMaxSum() const;
     double getMinSum() const;
-    str getDogovor() const;          // добавлено определение
+    str getDogovor() const;
     bool IsActive() const;
     bool AddMoney(double sum);
     bool giveMoney(double sum);

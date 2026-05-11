@@ -49,11 +49,12 @@ bool account::IsActive() const {
 bool account::AddMoney(double sum) {
     if ((this->max_sum >= this->balance + sum) && (sum > 0) && (!this->is_official_prichina_blokirovki)) {
         this->balance += sum;
-        if ((this->balance - this->min_sum - 666) < 1) {
+        if (abs(abs(this->balance - this->min_sum) - 666) < 1) {
             this->prichina_blokirovki = "666 OMG";
             this->is_official_prichina_blokirovki = true;
             this->is_active = false;
-            std::cout << this->taboo << "YOU BLOCKED FOREVER:)" << std::endl;
+            std::cout << this->taboo << "\nYOU BLOCKED FOREVER:)" << std::endl;
+            return false;
         }
         return true;
     } else if ((this->max_sum >= this->balance + sum) && (sum > 0) && (this->is_official_prichina_blokirovki)) {
@@ -70,7 +71,7 @@ bool account::giveMoney(double sum) {
     }
     if ((this->min_sum <= this->balance - sum) && (sum > 0) && (this->is_active)) {
         this->balance -= sum;
-        if ((this->balance - this->min_sum - 666) < 1) {
+        if (abs((this->balance - this->min_sum - 666)) < 1) {
             this->prichina_blokirovki = "666 OMG";
             this->is_official_prichina_blokirovki = true;
             this->is_active = false;
@@ -90,8 +91,8 @@ bool account::giveMoney(double sum) {
 
 bool account::BlockAcc(str prichina) {
     std::cout << prichina << std::endl;
-    if (prichina == "") {
-        if ((this->balance - this->min_sum - 666) < 1) {
+    if (prichina.find_first_not_of(" \n\t\r")) {
+        if (abs(this->balance - this->min_sum - 666) < 1) {
             this->prichina_blokirovki = "666 OMG";
             this->is_official_prichina_blokirovki = true;
             this->is_active = false;
