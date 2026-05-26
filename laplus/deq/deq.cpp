@@ -171,7 +171,3 @@ template<typename T>
 CircularList<T>::~CircularList() noexcept{
 this->clean();
 }
-
-int main(){
-    ;
-}
